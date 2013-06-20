@@ -2,10 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.trentorise.smartcampus</groupId>
-	<artifactId>resource.provider</artifactId>
+	<artifactId>resource.api</artifactId>
 	<version>1.0</version>
 	<packaging>jar</packaging>
-	<name>resource.provider</name>
+	<name>resource.api</name>
 
 	<properties>
 		<jasperreports.version>4.7.0</jasperreports.version>
@@ -209,7 +209,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<finalName>resource.provider</finalName>
+		<finalName>resource.api</finalName>
 	</build>
 
 	<repositories>
