@@ -38,7 +38,7 @@
 			<xsd:element name="resourceMapping" type="resourceMapping"
 				minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
-
+		<xsd:attribute name="method" type="xsd:string" />
 		<xsd:attribute name="uri" type="xsd:string" />
 		<xsd:attribute name="authority" type="xsd:string" />
 		<xsd:attribute name="pathPatterns" type="xsd:string" />

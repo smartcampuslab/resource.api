@@ -20,6 +20,8 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import eu.trentorise.smartcampus.resourceprovider.util.HttpMethod;
+
 
 /**
  * <p>Java class for resourceMapping complex type.
@@ -67,13 +69,10 @@ public class ResourceMapping {
     @XmlAttribute
     protected String uri;
     @XmlAttribute
-    protected String authority;
-    @XmlAttribute
     protected String pathPatterns;
     @XmlAttribute
-    protected Boolean approvalRequired;
-    @XmlAttribute
-    protected Boolean accessibleByOthers;
+    protected HttpMethod method;
+   
 
     /**
      * Gets the value of the description property.
@@ -199,93 +198,21 @@ public class ResourceMapping {
     public void setUri(String value) {
         this.uri = value;
     }
-
-    /**
-     * Gets the value of the authority property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getAuthority() {
-        return authority;
-    }
-
-    /**
-     * Sets the value of the authority property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAuthority(String value) {
-        this.authority = value;
-    }
-
-    /**
-     * Gets the value of the approvalRequired property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public boolean isApprovalRequired() {
-        if (approvalRequired == null) {
-            return false;
-        } else {
-            return approvalRequired;
-        }
-    }
-
-    /**
-     * Sets the value of the approvalRequired property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setApprovalRequired(Boolean value) {
-        this.approvalRequired = value;
-    }
-
-    /**
-     * Gets the value of the accessibleByOthers property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public boolean isAccessibleByOthers() {
-        if (accessibleByOthers == null) {
-            return true;
-        } else {
-            return accessibleByOthers;
-        }
-    }
-
-    /**
-     * Sets the value of the accessibleByOthers property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setAccessibleByOthers(Boolean value) {
-        this.accessibleByOthers = value;
-    }
-
+  
 	public String getPathPatterns() {
 		return pathPatterns;
 	}
 
 	public void setPathPatterns(String pathPatterns) {
 		this.pathPatterns = pathPatterns;
+	}
+
+	public HttpMethod getMethod() {
+		return method;
+	}
+
+	public void setMethod(HttpMethod method) {
+		this.method = method;
 	}
 
 }

@@ -21,6 +21,7 @@ import org.springframework.web.util.UriTemplate;
 import eu.trentorise.smartcampus.resourceprovider.jaxbmodel.ResourceDeclaration;
 import eu.trentorise.smartcampus.resourceprovider.jaxbmodel.ResourceMapping;
 import eu.trentorise.smartcampus.resourceprovider.jaxbmodel.Service;
+import eu.trentorise.smartcampus.resourceprovider.util.HttpMethod;
 
 /**
  * 
@@ -43,6 +44,7 @@ public class UriManager {
 			Collection<GrantedAuthority> collection) {
 
 		String url = getFullURL(httpServletRequest);
+		HttpMethod method= HttpMethod.valueOf(httpServletRequest.getMethod());
 
 		Service service = loadResourceTemplates(tagProviderFile);
 		if (service != null) {
@@ -59,12 +61,11 @@ public class UriManager {
 						
 
 					UriTemplate uriPattern = new UriTemplate(pattern);
-					System.out.println(uriPattern);
-					System.out.println(url);
-					if (uriPattern.matches(url)) {
+					//if method==null all methods were permitted only if is different is not permitted
+					if (uriPattern.matches(url) && (rm.getMethod()==null || rm.getMethod().compareTo(method)==0)) {
 
-						logger.info("Check " + rm.getId() + " : " + uriPattern
-								+ " ==> " + uriPattern.match(url));
+						logger.info("Check " + rm.getId() +  " : " + uriPattern
+								+" " +rm.getMethod()+" ==> " + uriPattern.match(url) );
 						return rm.getUri();
 					}}
 			//	}
