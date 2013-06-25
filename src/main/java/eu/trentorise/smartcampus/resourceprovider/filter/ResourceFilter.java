@@ -83,8 +83,6 @@ public class ResourceFilter implements Filter, InitializingBean {
 		final HttpServletRequest request = (HttpServletRequest) req;
 		final HttpServletResponse response = (HttpServletResponse) res;
 
-		
-
 		try {
 
 			String tokenValue = parseToken(request);
@@ -102,9 +100,6 @@ public class ResourceFilter implements Filter, InitializingBean {
 						.buildDetails(request));
 				Authentication authResult = authenticate(authentication,
 						((HttpServletRequest) request));
-
-				
-					
 
 				SecurityContextHolder.getContext()
 						.setAuthentication(authResult);
@@ -188,34 +183,29 @@ public class ResourceFilter implements Filter, InitializingBean {
 			HttpServletRequest request) throws AuthenticationException {
 
 		setResourceStore(new JdbcResourceServices(dataSource));
-		
+
 		String token = (String) authentication.getPrincipal();
 		OAuth2Authentication auth = loadAuthentication(token);
-		
 
 		if (auth == null) {
 			throw new InvalidTokenException("Invalid token: " + token);
 		}
-		
-		String resourceUri = uriManager
-				.getUriFromRequest(((HttpServletRequest) request),auth.getAuthorities());
 
-		
+		String resourceUri = uriManager.getUriFromRequest(
+				((HttpServletRequest) request), auth.getAuthorities());
 
-		String resourceID =   resourceUri ;//resourceStore.loadResourceByResourceUri(resourceUri); test senza lettura db
+		String resourceID = resourceUri;// resourceStore.loadResourceByResourceUri(resourceUri);
+										// test senza lettura db
 
-		Collection<String> resourceIds = auth.getAuthorizationRequest().getScope();
-				
-		
-		
-		if (resourceID == null  ||  resourceIds.isEmpty()
+		Collection<String> resourceIds = auth.getAuthorizationRequest()
+				.getScope();
+
+		if (resourceID == null || resourceIds.isEmpty()
 				|| !resourceIds.contains(resourceID)) {
 			throw new OAuth2AccessDeniedException(
 					"Invalid token does not contain resource id ("
 							+ resourceUri + ")");
 		}
-
-		
 
 		auth.setDetails(authentication.getDetails());
 		return auth;
@@ -275,7 +265,5 @@ public class ResourceFilter implements Filter, InitializingBean {
 	public void setUriManager(UriManager uriManager) {
 		this.uriManager = uriManager;
 	}
-	
-	
 
 }
