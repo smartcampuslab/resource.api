@@ -3,6 +3,7 @@ package eu.trentorise.smartcampus.resourceprovider.filter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -16,6 +17,8 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
@@ -26,6 +29,7 @@ import org.springframework.security.oauth2.client.resource.OAuth2AccessDeniedExc
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
+import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetailsSource;
@@ -180,7 +184,7 @@ public class ResourceFilter implements Filter, InitializingBean {
 	}
 
 	public Authentication authenticate(Authentication authentication,
-			HttpServletRequest request) throws AuthenticationException {
+			HttpServletRequest request) throws AuthenticationException, JsonParseException, JsonMappingException, IOException {
 
 		setResourceStore(new JdbcResourceServices(dataSource));
 
@@ -206,8 +210,11 @@ public class ResourceFilter implements Filter, InitializingBean {
 					"Invalid token does not contain resource id ("
 							+ resourceUri + ")");
 		}
-
+		
+		
+		
 		auth.setDetails(authentication.getDetails());
+		
 		return auth;
 
 	}
