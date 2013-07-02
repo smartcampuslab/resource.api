@@ -19,7 +19,7 @@
 		</dependency>
 
 
-		<!-- added ac-service-filter 1.1 dep TEMPORANEALY -->
+		<!-- added ac-service-filter 1.1 dep TEMPORARY -->
 		<dependency>
 			<groupId>eu.trentorise.smartcampus</groupId>
 			<artifactId>ac-service-provider-filter</artifactId>
