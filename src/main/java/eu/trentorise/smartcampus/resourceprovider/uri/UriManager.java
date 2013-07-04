@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.JAXBContext;
@@ -52,24 +53,16 @@ public class UriManager {
 			Iterator<ResourceMapping> index = listPath.iterator();
 			while (index.hasNext()) {
 				ResourceMapping rm = index.next();
-				String pattern = rm.getPathPatterns();
+				UriTemplate pathPattern = rm.getPathTemplate();
 				//System.out.println(collection.toString());
 				//System.out.println(rm.getAuthority());
 				//System.out.println(pattern);
 			//	if (collection.toString().contains(rm.getAuthority())) {
-					if (pattern != null){
-						
-
-					UriTemplate uriPattern = new UriTemplate(pattern);
-					//if method==null all methods were permitted only if is different is not permitted
-					if (uriPattern.matches(url) && (rm.getMethod()==null || rm.getMethod().compareTo(method)==0)) {
-
-						logger.info("Check " + rm.getId() +  " : " + uriPattern
-								+" " +rm.getMethod()+" ==> " + uriPattern.match(url) );
-						return rm.getUri();
-					}}
-			//	}
-
+				if (pathPattern.matches(url) && (rm.getMethod()==null || rm.getMethods().contains(method.toString()))) {
+					Map<String, String> match = pathPattern.match(url);
+					logger.info("Check  " + pathPattern +" " +rm.getMethod()+" ==> " + match );
+					return rm.getUriTemplate().expand(match).toString();
+				}
 			}
 		}else{
 			logger.info("Service non registered ");
