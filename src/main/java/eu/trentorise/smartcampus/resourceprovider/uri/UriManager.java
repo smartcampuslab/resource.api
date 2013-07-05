@@ -35,10 +35,6 @@ public class UriManager {
 
 	private final static Log logger = LogFactory.getLog(UriManager.class);
 
-	private String contextPath;
-
-	private String serviceId;
-	
 	private File tagProviderFile;
 
 	public String getUriFromRequest(HttpServletRequest httpServletRequest,
@@ -73,34 +69,23 @@ public class UriManager {
 	}
 
 	public String getFullURL(HttpServletRequest request) {
-		StringBuffer requestURL = request.getRequestURL();
-
-		String queryString = request.getQueryString();
-
-		if (queryString == null) {// TODO http://localhost:8080/profileservice/
-									// crash String index out of range: -1
-			return requestURL.substring(requestURL.indexOf(contextPath))
-					.toString();
-		} else {
-			return requestURL.append('?').append(queryString).toString()
-					.substring(requestURL.indexOf(contextPath));
+//		StringBuffer requestURL = request.getRequestURL();
+//
+//		String queryString = request.getQueryString();
+//
+//		if (queryString == null) {// TODO http://localhost:8080/profileservice/
+//									// crash String index out of range: -1
+//			return requestURL.substring(requestURL.indexOf(contextPath))
+//					.toString();
+//		} else {
+//			return requestURL.append('?').append(queryString).toString()
+//					.substring(requestURL.indexOf(contextPath));
+//		}
+		String cp = request.getContextPath();
+		if (cp == null || cp.isEmpty()) {
+			return request.getRequestURI();
 		}
-	}
-
-	public String getServiceId() {
-		return serviceId;
-	}
-
-	public void setServiceId(String serviceId) {
-		this.serviceId = serviceId;
-	}
-
-	public String getContextPath() {
-		return contextPath;
-	}
-
-	public void setContextPath(String contextPath) {
-		this.contextPath = contextPath;
+		return request.getRequestURI().substring(cp.length());
 	}
 
 	public File getTagProviderFile() {

@@ -35,8 +35,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * 
  */
 
-public class JdbcResourceServices extends JdbcTemplate {
-	private static final String DEFAULT_RESOURCE_SELECT_STATEMENT = "select resourceId from Resource where resourceUri = ?";
+public class JdbcServices extends JdbcTemplate {
+	private static final String DEFAULT_RESOURCE_SELECT_STATEMENT = "select authority from resource where resourceUri = ?";
 	
 	private static final String DEFAULT_ADDINFO_SELECT_STATEMENT = "SELECT additional_information FROM  oauth_client_details cl where cl.client_id= ?";
 	
@@ -44,23 +44,23 @@ public class JdbcResourceServices extends JdbcTemplate {
 	
 	private String selectResourceSql = DEFAULT_RESOURCE_SELECT_STATEMENT;
 	private static ObjectMapper mapper = new ObjectMapper();
-	private final static Log logger = LogFactory.getLog(JdbcResourceServices.class);
+	private final static Log logger = LogFactory.getLog(JdbcServices.class);
 
-	public JdbcResourceServices(DataSource dataSource) {
+	public JdbcServices(DataSource dataSource) {
 		super(dataSource);
 	}
 
-	public String loadResourceByResourceUri(String resourceUri) {
-		String resourceId = null;
+	public String loadResourceAuthorityByResourceUri(String resourceUri) {
+		String resourceAuthority = null;
 
 		try {
 			Object[] parameters = new Object[] {resourceUri};
-			resourceId = queryForObject(selectResourceSql,parameters,String.class);
+			resourceAuthority = queryForObject(selectResourceSql,parameters,String.class);
 		} catch (EmptyResultDataAccessException e) {
 			logger.error("No resource found "+ resourceUri );
 		}
 
-		return resourceId;
+		return resourceAuthority;
 	}
 	
 	public Map<String,String> loadAddInfoByToken(String clientId) throws JsonParseException, JsonMappingException, IOException {

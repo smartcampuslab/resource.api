@@ -3,7 +3,6 @@ package eu.trentorise.smartcampus.resourceprovider.filter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -29,7 +28,6 @@ import org.springframework.security.oauth2.client.resource.OAuth2AccessDeniedExc
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
-import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetailsSource;
@@ -40,7 +38,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.util.Assert;
 
-import eu.trentorise.smartcampus.resourceprovider.jdbc.JdbcResourceServices;
+import eu.trentorise.smartcampus.resourceprovider.jdbc.JdbcServices;
 import eu.trentorise.smartcampus.resourceprovider.uri.UriManager;
 
 public class ResourceFilter implements Filter, InitializingBean {
@@ -54,7 +52,7 @@ public class ResourceFilter implements Filter, InitializingBean {
 	private UriManager uriManager;
 
 	private TokenStore tokenStore;
-	private JdbcResourceServices resourceStore;
+	private JdbcServices resourceStore;
 	private DataSource dataSource;
 
 	/**
@@ -94,6 +92,7 @@ public class ResourceFilter implements Filter, InitializingBean {
 				if (debug) {
 					logger.debug("No token in request, will continue chain.");
 				}
+				throw new OAuth2Exception("empty token");
 			} else {
 				PreAuthenticatedAuthenticationToken authentication = new PreAuthenticatedAuthenticationToken(
 						tokenValue, "");
@@ -186,7 +185,7 @@ public class ResourceFilter implements Filter, InitializingBean {
 	public Authentication authenticate(Authentication authentication,
 			HttpServletRequest request) throws AuthenticationException, JsonParseException, JsonMappingException, IOException {
 
-		setResourceStore(new JdbcResourceServices(dataSource));
+		setResourceStore(new JdbcServices(dataSource));
 
 		String token = (String) authentication.getPrincipal();
 		OAuth2Authentication auth = loadAuthentication(token);
@@ -211,7 +210,9 @@ public class ResourceFilter implements Filter, InitializingBean {
 							+ resourceUri + ")");
 		}
 		
-		
+		if ("ROLE_USER".equals(resourceStore.loadResourceAuthorityByResourceUri(resourceUri)) && auth.isClientOnly()) {
+			throw new OAuth2Exception("Incorrect access method");
+		} 
 		
 		auth.setDetails(authentication.getDetails());
 		
@@ -257,11 +258,11 @@ public class ResourceFilter implements Filter, InitializingBean {
 		this.dataSource = dataSource;
 	}
 
-	public JdbcResourceServices getResourceStore() {
+	public JdbcServices getResourceStore() {
 		return resourceStore;
 	}
 
-	public void setResourceStore(JdbcResourceServices resourceStore) {
+	public void setResourceStore(JdbcServices resourceStore) {
 		this.resourceStore = resourceStore;
 	}
 
