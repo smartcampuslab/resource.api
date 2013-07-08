@@ -2,12 +2,13 @@ package eu.trentorise.smartcampus.resourceprovider.uri;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
@@ -16,7 +17,6 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriTemplate;
 
 import eu.trentorise.smartcampus.resourceprovider.jaxbmodel.ResourceDeclaration;
@@ -25,25 +25,38 @@ import eu.trentorise.smartcampus.resourceprovider.jaxbmodel.Service;
 import eu.trentorise.smartcampus.resourceprovider.util.HttpMethod;
 
 /**
- * 
+ * Helper class to map the resource requests onto the unique resource IDs (resource URIs).
+ * The mapping is based on the (XML) resource descriptor provided.
  * @author federico
  * 
  */
-
-@Component
 public class UriManager {
 
 	private final static Log logger = LogFactory.getLog(UriManager.class);
 
-	private File tagProviderFile;
+	private Service service;
+	
+	public UriManager(InputStream is) {
+		super();
+		service = loadResourceTemplates(is);
+	}
 
-	public String getUriFromRequest(HttpServletRequest httpServletRequest,
-			Collection<GrantedAuthority> collection) {
+	/**
+	 * @param tagProviderFile
+	 */
+	public UriManager(File tagProviderFile) {
+		super();
+		try {
+			service = loadResourceTemplates(new FileInputStream(tagProviderFile));
+		} catch (FileNotFoundException e) {
+			logger.error("Failed to find resource file: "+e.getMessage(), e);
+			e.printStackTrace();
+		}
+	}
 
-		String url = getFullURL(httpServletRequest);
-		HttpMethod method= HttpMethod.valueOf(httpServletRequest.getMethod());
 
-		Service service = loadResourceTemplates(tagProviderFile);
+	public String getUriFromRequest(String url, HttpMethod method, Collection<GrantedAuthority> collection) {
+
 		if (service != null) {
 			List<ResourceMapping> listPath = service.getResourceMapping();
 			Iterator<ResourceMapping> index = listPath.iterator();
@@ -68,43 +81,14 @@ public class UriManager {
 
 	}
 
-	public String getFullURL(HttpServletRequest request) {
-//		StringBuffer requestURL = request.getRequestURL();
-//
-//		String queryString = request.getQueryString();
-//
-//		if (queryString == null) {// TODO http://localhost:8080/profileservice/
-//									// crash String index out of range: -1
-//			return requestURL.substring(requestURL.indexOf(contextPath))
-//					.toString();
-//		} else {
-//			return requestURL.append('?').append(queryString).toString()
-//					.substring(requestURL.indexOf(contextPath));
-//		}
-		String cp = request.getContextPath();
-		if (cp == null || cp.isEmpty()) {
-			return request.getRequestURI();
-		}
-		return request.getRequestURI().substring(cp.length());
-	}
-
-	public File getTagProviderFile() {
-		return tagProviderFile;
-	}
-
-	public void setTagProviderFile(File tagProviderFile) {
-		this.tagProviderFile = tagProviderFile;
-	}
-	
-	private Service loadResourceTemplates(File tagProviderFile) {
+	private Service loadResourceTemplates(InputStream inputStream) {
 		try {
 			JAXBContext jaxb = JAXBContext.newInstance(Service.class,
 					Service.class, ResourceMapping.class,
 					ResourceDeclaration.class);
 			Unmarshaller unm = jaxb.createUnmarshaller();
 			JAXBElement<Service> element = (JAXBElement<Service>) unm
-					.unmarshal(new StreamSource(new FileInputStream(
-							tagProviderFile)), Service.class);
+					.unmarshal(new StreamSource(inputStream), Service.class);
 			return element.getValue();
 		} catch (Exception e) {
 			e.printStackTrace();
