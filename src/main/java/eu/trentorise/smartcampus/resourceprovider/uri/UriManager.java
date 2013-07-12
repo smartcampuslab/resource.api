@@ -62,7 +62,7 @@ public class UriManager {
 			Iterator<ResourceMapping> index = listPath.iterator();
 			while (index.hasNext()) {
 				ResourceMapping rm = index.next();
-				UriTemplate pathPattern = rm.getPathTemplate();
+				UriTemplate pathPattern = rm.pathTemplate();
 				//System.out.println(collection.toString());
 				//System.out.println(rm.getAuthority());
 				//System.out.println(pattern);
@@ -70,7 +70,7 @@ public class UriManager {
 				if (pathPattern.matches(url) && (rm.getMethod()==null || rm.getMethods().contains(method.toString()))) {
 					Map<String, String> match = pathPattern.match(url);
 					logger.info("Check  " + pathPattern +" " +rm.getMethod()+" ==> " + match );
-					return rm.getUriTemplate().expand(match).toString();
+					return rm.uriTemplate().expand(match).toString();
 				}
 			}
 		}else{

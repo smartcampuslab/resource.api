@@ -46,9 +46,6 @@ public class ResourceMapping {
     @XmlAttribute
     protected String method;
 
-    private UriTemplate uriTemplate = null;
-    private UriTemplate pathTemplate = null;
-    
     /**
      * Gets the value of the uri property.
      * 
@@ -94,18 +91,12 @@ public class ResourceMapping {
 		return StringUtils.commaDelimitedListToSet(method);
 	}
 	
-	public UriTemplate getUriTemplate() {
-		if (uriTemplate == null)  {
-			uriTemplate = new UriTemplate(uri);
-		}
-		return uriTemplate;
+	public UriTemplate uriTemplate() {
+		return new UriTemplate(uri);
 	}
 	
-	public UriTemplate getPathTemplate() {
-		if (pathTemplate == null)  {
-			pathTemplate = new UriTemplate(pathPattern);
-		}
-		return pathTemplate;
+	public UriTemplate pathTemplate() {
+		return new UriTemplate(pathPattern);
 	}
 	
 }
