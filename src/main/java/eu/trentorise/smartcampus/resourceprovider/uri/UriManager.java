@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -35,10 +38,21 @@ public class UriManager {
 	private final static Log logger = LogFactory.getLog(UriManager.class);
 
 	private Service service;
+	private List<ResourceMapping> mappings = null;
+	
+	private static Comparator<ResourceMapping> comparator = new Comparator<ResourceMapping>() {
+
+		@Override
+		public int compare(ResourceMapping o1, ResourceMapping o2) {
+			return o2.getPathPattern().compareTo(o1.getPathPattern());
+		}
+	};
 	
 	public UriManager(InputStream is) {
 		super();
 		service = loadResourceTemplates(is);
+		mappings = new ArrayList<ResourceMapping>(service.getResourceMapping());
+		Collections.sort(mappings,comparator);
 	}
 
 	/**
@@ -48,6 +62,8 @@ public class UriManager {
 		super();
 		try {
 			service = loadResourceTemplates(new FileInputStream(tagProviderFile));
+			mappings = new ArrayList<ResourceMapping>(service.getResourceMapping());
+			Collections.sort(mappings,comparator);
 		} catch (FileNotFoundException e) {
 			logger.error("Failed to find resource file: "+e.getMessage(), e);
 			e.printStackTrace();
@@ -57,8 +73,8 @@ public class UriManager {
 
 	public String getUriFromRequest(String url, HttpMethod method, Collection<GrantedAuthority> collection) {
 
-		if (service != null) {
-			List<ResourceMapping> listPath = service.getResourceMapping();
+		if (mappings != null) {
+			List<ResourceMapping> listPath = mappings;
 			Iterator<ResourceMapping> index = listPath.iterator();
 			while (index.hasNext()) {
 				ResourceMapping rm = index.next();

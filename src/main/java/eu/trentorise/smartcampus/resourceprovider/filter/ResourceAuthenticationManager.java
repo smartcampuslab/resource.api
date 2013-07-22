@@ -117,11 +117,12 @@ public class ResourceAuthenticationManager implements AuthenticationManager {
 							+ resourceUri + ")");
 		}
 		
-		if (ROLE_USER.equals(authServices.loadResourceAuthorityByResourceUri(resourceUri)) && auth.isClientOnly()) {
-			throw new OAuth2Exception("Incorrect access method");
+		String authority = authServices.loadResourceAuthorityByResourceUri(resourceUri);
+		if (ROLE_USER.equals(authority) && auth.isClientOnly()) {
+			throw new OAuth2AccessDeniedException("Incorrect access method");
 		} 
-		if (ROLE_CLIENT.equals(authServices.loadResourceAuthorityByResourceUri(resourceUri)) && !auth.isClientOnly()) {
-			throw new OAuth2Exception("Incorrect access method");
+		if (ROLE_CLIENT.equals(authority) && !auth.isClientOnly()) {
+			throw new OAuth2AccessDeniedException("Incorrect access method");
 		} 
 		
 		auth.setDetails(authentication.getDetails());
