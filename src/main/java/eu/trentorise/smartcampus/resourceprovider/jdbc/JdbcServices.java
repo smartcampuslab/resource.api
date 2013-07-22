@@ -82,7 +82,7 @@ public class JdbcServices extends JdbcTemplate implements AuthServices {
 				user.setId(rs.getLong("id"));
 				user.setName(rs.getString("name"));
 				user.setSurname(rs.getString("surname"));
-				user.setSocialId(rs.getLong("social_id"));
+				user.setSocialId(rs.getString("social_id"));
 				return user;
 			}
 			

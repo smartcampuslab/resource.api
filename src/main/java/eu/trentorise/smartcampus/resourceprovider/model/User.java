@@ -25,7 +25,7 @@ package eu.trentorise.smartcampus.resourceprovider.model;
 public class User {
 
 	private Long id;
-	private Long socialId;
+	private String socialId;
 
 	private String name; 
 	private String surname;
@@ -35,10 +35,10 @@ public class User {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Long getSocialId() {
+	public String getSocialId() {
 		return socialId;
 	}
-	public void setSocialId(Long socialId) {
+	public void setSocialId(String socialId) {
 		this.socialId = socialId;
 	}
 	public String getName() {
