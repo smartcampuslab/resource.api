@@ -42,9 +42,11 @@ import eu.trentorise.smartcampus.social.model.User;
 public class JdbcServices extends JdbcTemplate implements AuthServices {
 	private static final String DEFAULT_RESOURCE_SELECT_STATEMENT = "select authority from resource where resourceUri = ?";
 	private static final String DEFAULT_USER_SELECT_STATEMENT = "select * from user where id = ?";
+	private static final String DEFAULT_USER_SOCIALID_SELECT_STATEMENT = "select * from user where social_id = ?";
 	
 	private String selectResourceSql = DEFAULT_RESOURCE_SELECT_STATEMENT;
 	private String selectUserSql = DEFAULT_USER_SELECT_STATEMENT;
+	private String selectUserSocialIdSql = DEFAULT_USER_SOCIALID_SELECT_STATEMENT;
 
 	private final static Log logger = LogFactory.getLog(JdbcServices.class);
 
@@ -89,5 +91,22 @@ public class JdbcServices extends JdbcTemplate implements AuthServices {
 		}, Long.parseLong(userId));
 	}
 
+	@Override
+	public User loadUserBySocialId(String socialId) {
+		return queryForObject(selectUserSocialIdSql, new RowMapper<User>(){
+			@Override
+			public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+				User user = new User();
+				user.setId(""+rs.getLong("id"));
+				user.setName(rs.getString("name"));
+				user.setSurname(rs.getString("surname"));
+				user.setSocialId(rs.getString("social_id"));
+				return user;
+			}
+			
+		}, socialId);
+	}
+
+	
 	
 }

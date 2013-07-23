@@ -44,4 +44,10 @@ public interface AuthServices {
 	 * @return {@link User} object with the specific Id
 	 */
 	User loadUserByUserId(String userId);
+	/**
+	 * 
+	 * @param socialId
+	 * @return {@link User} object with the specific social Id
+	 */
+	User loadUserBySocialId(String socialId);
 }
