@@ -18,6 +18,8 @@ package eu.trentorise.smartcampus.resourceprovider.model;
 
 import org.springframework.security.oauth2.provider.ClientDetails;
 
+import eu.trentorise.smartcampus.social.model.User;
+
 /**
  * This interface is used by the resource provider components to
  * get access to resource/client/user information.

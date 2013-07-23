@@ -31,7 +31,7 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.JdbcClientDetailsService;
 
 import eu.trentorise.smartcampus.resourceprovider.model.AuthServices;
-import eu.trentorise.smartcampus.resourceprovider.model.User;
+import eu.trentorise.smartcampus.social.model.User;
 
 /**
  * JDBC-based implementation of the {@link AuthServices} 

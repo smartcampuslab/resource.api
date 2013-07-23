@@ -12,6 +12,11 @@
 	</properties>
 
 	<dependencies>
+        <dependency>
+            <groupId>eu.trentorise.smartcampus</groupId>
+            <artifactId>smartcampus.socialservice.model</artifactId>
+            <version>1.1</version>
+        </dependency>
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-frontend-jaxrs</artifactId>

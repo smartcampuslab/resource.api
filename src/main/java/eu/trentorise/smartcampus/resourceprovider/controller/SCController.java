@@ -20,7 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 
 import eu.trentorise.smartcampus.resourceprovider.model.AuthServices;
-import eu.trentorise.smartcampus.resourceprovider.model.User;
+import eu.trentorise.smartcampus.social.model.User;
 
 /**
  * Controller prototype with the helper methods for reading user data
