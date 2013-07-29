@@ -52,6 +52,7 @@ public class UriManager {
 		super();
 		service = loadResourceTemplates(is);
 		mappings = new ArrayList<ResourceMapping>(service.getResourceMapping());
+		processMappings();
 		Collections.sort(mappings,comparator);
 	}
 
@@ -63,6 +64,7 @@ public class UriManager {
 		try {
 			service = loadResourceTemplates(new FileInputStream(tagProviderFile));
 			mappings = new ArrayList<ResourceMapping>(service.getResourceMapping());
+			processMappings();
 			Collections.sort(mappings,comparator);
 		} catch (FileNotFoundException e) {
 			logger.error("Failed to find resource file: "+e.getMessage(), e);
@@ -71,8 +73,16 @@ public class UriManager {
 	}
 
 
-	public String getUriFromRequest(String url, HttpMethod method, Collection<GrantedAuthority> collection) {
+	private void processMappings() {
+		for (ResourceMapping rm : mappings) {
+			if (!rm.getPathPattern().endsWith("/")) {
+				rm.setPathPattern(rm.getPathPattern()+"/");
+			} 
+		}
+	}
 
+	public String getUriFromRequest(String url, HttpMethod method, Collection<GrantedAuthority> collection) {
+		if (!url.endsWith("/")) url += "/";
 		if (mappings != null) {
 			List<ResourceMapping> listPath = mappings;
 			Iterator<ResourceMapping> index = listPath.iterator();
@@ -85,6 +95,7 @@ public class UriManager {
 			//	if (collection.toString().contains(rm.getAuthority())) {
 				if (pathPattern.matches(url) && (rm.getMethod()==null || rm.getMethods().contains(method.toString()))) {
 					Map<String, String> match = pathPattern.match(url);
+					if (match.values().contains("")) continue;
 					logger.info("Check  " + pathPattern +" " +rm.getMethod()+" ==> " + match );
 					return rm.uriTemplate().expand(match).toString();
 				}
