@@ -135,7 +135,7 @@ public class ResourceAuthenticationManager implements AuthenticationManager {
 		if (accessToken == null) {
 			throw new InvalidTokenException("Invalid access token: " + token);
 		} else if (accessToken.isExpired()) {
-			tokenStore.removeAccessToken(accessToken);
+//			tokenStore.removeAccessToken(accessToken);
 			throw new InvalidTokenException("Access token expired: " + token);
 		}
 
