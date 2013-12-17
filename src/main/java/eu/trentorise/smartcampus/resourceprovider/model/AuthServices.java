@@ -16,6 +16,8 @@
 
 package eu.trentorise.smartcampus.resourceprovider.model;
 
+import java.util.List;
+
 import org.springframework.security.oauth2.provider.ClientDetails;
 
 import eu.trentorise.smartcampus.social.model.User;
@@ -50,4 +52,12 @@ public interface AuthServices {
 	 * @return {@link User} object with the specific social Id
 	 */
 	User loadUserBySocialId(String socialId);
+	/**
+	 * 
+	 * @param userId
+	 * @return {@link App} object with the specific Id
+	 */
+	List<String> loadAppByUserId(String userId);
+
+
 }

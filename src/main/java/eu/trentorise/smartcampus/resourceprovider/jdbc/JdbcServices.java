@@ -18,6 +18,7 @@ package eu.trentorise.smartcampus.resourceprovider.jdbc;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -43,10 +44,12 @@ public class JdbcServices extends JdbcTemplate implements AuthServices {
 	private static final String DEFAULT_RESOURCE_SELECT_STATEMENT = "select authority from resource where resourceUri = ?";
 	private static final String DEFAULT_USER_SELECT_STATEMENT = "select * from user where id = ?";
 	private static final String DEFAULT_USER_SOCIALID_SELECT_STATEMENT = "select * from user where social_id = ?";
+	private static final String DEFAULT_APP_BY_USER="select value from resource_parameter where clientId in(select clientId from oauth_client_details where developerId=?)";
 	
 	private String selectResourceSql = DEFAULT_RESOURCE_SELECT_STATEMENT;
 	private String selectUserSql = DEFAULT_USER_SELECT_STATEMENT;
 	private String selectUserSocialIdSql = DEFAULT_USER_SOCIALID_SELECT_STATEMENT;
+	private String selectAppByUser = DEFAULT_APP_BY_USER;
 
 	private final static Log logger = LogFactory.getLog(JdbcServices.class);
 
@@ -105,6 +108,12 @@ public class JdbcServices extends JdbcTemplate implements AuthServices {
 			}
 			
 		}, socialId);
+	}
+
+	@Override
+	public List<String> loadAppByUserId(String userId) {
+		Object[] parameters = new Object[] {userId};
+		return queryForList(selectAppByUser,parameters,String.class);
 	}
 
 	
