@@ -19,6 +19,7 @@ package eu.trentorise.smartcampus.resourceprovider.jdbc;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -31,11 +32,13 @@ import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.JdbcClientDetailsService;
 
+import eu.trentorise.smartcampus.resourceprovider.model.App;
 import eu.trentorise.smartcampus.resourceprovider.model.AuthServices;
 import eu.trentorise.smartcampus.social.model.User;
 
 /**
- * JDBC-based implementation of the {@link AuthServices} 
+ * JDBC-based implementation of the {@link AuthServices}
+ * 
  * @author federico
  * 
  */
@@ -44,8 +47,10 @@ public class JdbcServices extends JdbcTemplate implements AuthServices {
 	private static final String DEFAULT_RESOURCE_SELECT_STATEMENT = "select authority from resource where resourceUri = ?";
 	private static final String DEFAULT_USER_SELECT_STATEMENT = "select * from user where id = ?";
 	private static final String DEFAULT_USER_SOCIALID_SELECT_STATEMENT = "select * from user where social_id = ?";
-	private static final String DEFAULT_APP_BY_USER="select value from resource_parameter where clientId in(select clientId from oauth_client_details where developerId=?)";
-	
+	// private static final String
+	// DEFAULT_APP_BY_USER="select value from resource_parameter where clientId in(select clientId from oauth_client_details where developerId=?)";
+	private static final String DEFAULT_APP_BY_USER = "select value,client_secret,client_id from resource_parameter r,oauth_client_details c where r.clientId =c.client_Id and developerId=?";
+
 	private String selectResourceSql = DEFAULT_RESOURCE_SELECT_STATEMENT;
 	private String selectUserSql = DEFAULT_USER_SELECT_STATEMENT;
 	private String selectUserSocialIdSql = DEFAULT_USER_SOCIALID_SELECT_STATEMENT;
@@ -54,7 +59,7 @@ public class JdbcServices extends JdbcTemplate implements AuthServices {
 	private final static Log logger = LogFactory.getLog(JdbcServices.class);
 
 	ClientDetailsService clientDetailsService;
-	
+
 	public JdbcServices(DataSource dataSource) {
 		super(dataSource);
 		this.clientDetailsService = new JdbcClientDetailsService(dataSource);
@@ -64,15 +69,16 @@ public class JdbcServices extends JdbcTemplate implements AuthServices {
 		String resourceAuthority = null;
 
 		try {
-			Object[] parameters = new Object[] {resourceUri};
-			resourceAuthority = queryForObject(selectResourceSql,parameters,String.class);
+			Object[] parameters = new Object[] { resourceUri };
+			resourceAuthority = queryForObject(selectResourceSql, parameters,
+					String.class);
 		} catch (EmptyResultDataAccessException e) {
-			logger.error("No resource found "+ resourceUri );
+			logger.error("No resource found " + resourceUri);
 		}
 
 		return resourceAuthority;
 	}
-	
+
 	@Override
 	public ClientDetails loadClientByClientId(String clientId) {
 		return clientDetailsService.loadClientByClientId(clientId);
@@ -80,42 +86,51 @@ public class JdbcServices extends JdbcTemplate implements AuthServices {
 
 	@Override
 	public User loadUserByUserId(String userId) {
-		return queryForObject(selectUserSql, new RowMapper<User>(){
+		return queryForObject(selectUserSql, new RowMapper<User>() {
 			@Override
 			public User mapRow(ResultSet rs, int rowNum) throws SQLException {
 				User user = new User();
-				user.setId(""+rs.getLong("id"));
+				user.setId("" + rs.getLong("id"));
 				user.setName(rs.getString("name"));
 				user.setSurname(rs.getString("surname"));
 				user.setSocialId(rs.getString("social_id"));
 				return user;
 			}
-			
+
 		}, Long.parseLong(userId));
 	}
 
 	@Override
 	public User loadUserBySocialId(String socialId) {
-		return queryForObject(selectUserSocialIdSql, new RowMapper<User>(){
+		return queryForObject(selectUserSocialIdSql, new RowMapper<User>() {
 			@Override
 			public User mapRow(ResultSet rs, int rowNum) throws SQLException {
 				User user = new User();
-				user.setId(""+rs.getLong("id"));
+				user.setId("" + rs.getLong("id"));
 				user.setName(rs.getString("name"));
 				user.setSurname(rs.getString("surname"));
 				user.setSocialId(rs.getString("social_id"));
 				return user;
 			}
-			
+
 		}, socialId);
 	}
 
 	@Override
-	public List<String> loadAppByUserId(String userId) {
-		Object[] parameters = new Object[] {userId};
-		return queryForList(selectAppByUser,parameters,String.class);
+	public List<App> loadAppByUserId(String userId) {
+		// Object[] parameters = new Object[] {userId};
+		// return queryForList(selectAppByUser,parameters,String.class);
+		return query(selectAppByUser, new RowMapper<App>() {
+			@Override
+			public App mapRow(ResultSet rs, int rownumber) throws SQLException {
+				App e = new App();
+				e.setAppId(rs.getString("value"));
+				e.setClientId(rs.getString("client_id"));
+				e.setClientSecret(rs.getString("client_secret"));
+
+				return e;
+			}
+		},userId);
 	}
 
-	
-	
 }

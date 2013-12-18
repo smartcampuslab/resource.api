@@ -57,7 +57,10 @@ public interface AuthServices {
 	 * @param userId
 	 * @return {@link App} object with the specific Id
 	 */
-	List<String> loadAppByUserId(String userId);
+	List<App> loadAppByUserId(String userId);
+	
+
+	
 
 
 }
