@@ -19,7 +19,6 @@ package eu.trentorise.smartcampus.resourceprovider.jdbc;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -32,8 +31,8 @@ import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.JdbcClientDetailsService;
 
-import eu.trentorise.smartcampus.resourceprovider.model.App;
 import eu.trentorise.smartcampus.resourceprovider.model.AuthServices;
+import eu.trentorise.smartcampus.resourceprovider.model.ResourceParameter;
 import eu.trentorise.smartcampus.social.model.User;
 
 /**
@@ -49,12 +48,12 @@ public class JdbcServices extends JdbcTemplate implements AuthServices {
 	private static final String DEFAULT_USER_SOCIALID_SELECT_STATEMENT = "select * from user where social_id = ?";
 	// private static final String
 	// DEFAULT_APP_BY_USER="select value from resource_parameter where clientId in(select clientId from oauth_client_details where developerId=?)";
-	private static final String DEFAULT_APP_BY_USER = "select value,client_secret,client_id from resource_parameter r,oauth_client_details c where r.clientId =c.client_Id and developerId=?";
+	private static final String DEFAULT_RESOURCE_PARAMETER_BY_USER = "select value,clientId,serviceId, resourceId  from resource_parameter r,oauth_client_details c where r.clientId =c.client_Id and c.developerId=?";
 
 	private String selectResourceSql = DEFAULT_RESOURCE_SELECT_STATEMENT;
 	private String selectUserSql = DEFAULT_USER_SELECT_STATEMENT;
 	private String selectUserSocialIdSql = DEFAULT_USER_SOCIALID_SELECT_STATEMENT;
-	private String selectAppByUser = DEFAULT_APP_BY_USER;
+	private String selectAppByUser = DEFAULT_RESOURCE_PARAMETER_BY_USER;
 
 	private final static Log logger = LogFactory.getLog(JdbcServices.class);
 
@@ -117,16 +116,17 @@ public class JdbcServices extends JdbcTemplate implements AuthServices {
 	}
 
 	@Override
-	public List<App> loadAppByUserId(String userId) {
+	public List<ResourceParameter> loadAppByUserId(String userId) {
 		// Object[] parameters = new Object[] {userId};
 		// return queryForList(selectAppByUser,parameters,String.class);
-		return query(selectAppByUser, new RowMapper<App>() {
+		return query(selectAppByUser, new RowMapper<ResourceParameter>() {
 			@Override
-			public App mapRow(ResultSet rs, int rownumber) throws SQLException {
-				App e = new App();
-				e.setAppId(rs.getString("value"));
-				e.setClientId(rs.getString("client_id"));
-				e.setClientSecret(rs.getString("client_secret"));
+			public ResourceParameter mapRow(ResultSet rs, int rownumber) throws SQLException {
+				ResourceParameter e = new ResourceParameter();
+				e.setValue(rs.getString("value"));
+				e.setClientId(rs.getString("clientId"));
+				e.setResourceId(rs.getString("resourceId"));
+				e.setServiceId(rs.getString("serviceId"));
 
 				return e;
 			}
