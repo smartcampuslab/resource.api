@@ -116,7 +116,7 @@ public class JdbcServices extends JdbcTemplate implements AuthServices {
 	}
 
 	@Override
-	public List<ResourceParameter> loadAppByUserId(String userId) {
+	public List<ResourceParameter> loadResourceParameterByUserId(String userId) {
 		// Object[] parameters = new Object[] {userId};
 		// return queryForList(selectAppByUser,parameters,String.class);
 		return query(selectAppByUser, new RowMapper<ResourceParameter>() {
