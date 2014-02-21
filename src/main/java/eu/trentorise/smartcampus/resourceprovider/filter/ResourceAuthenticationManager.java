@@ -35,11 +35,11 @@ import eu.trentorise.smartcampus.resourceprovider.model.AuthServices;
 import eu.trentorise.smartcampus.resourceprovider.uri.UriManager;
 
 /**
- * Authentication manager used to check the access for the specific resource. 
+ * Authentication manager used to check the access for the specific resource.
  * The resource is identified based on the requested resource path.
  * 
  * @author raman
- *
+ * 
  */
 public class ResourceAuthenticationManager implements AuthenticationManager {
 
@@ -57,8 +57,10 @@ public class ResourceAuthenticationManager implements AuthenticationManager {
 	private UriManager uriManager = null;
 
 	private Resource resourceDescriptor;
+
 	/**
 	 * Instance of the uri manager based on the resource descriptor file.
+	 * 
 	 * @return
 	 * @throws IOException
 	 */
@@ -66,40 +68,50 @@ public class ResourceAuthenticationManager implements AuthenticationManager {
 		if (uriManager == null) {
 			try {
 				if (resourceDescriptor != null) {
-					uriManager = new UriManager(resourceDescriptor.getInputStream());
+					uriManager = new UriManager(
+							resourceDescriptor.getInputStream());
 				} else {
-					uriManager = new UriManager(getClass().getClassLoader().getResourceAsStream("/resourceList.xml"));
+					uriManager = new UriManager(Thread.currentThread()
+							.getContextClassLoader()
+							.getResourceAsStream("/resourceList.xml"));
 				}
 			} catch (IOException e) {
-				logger .error("Failed to load resources: "+e.getMessage(),e);
+				logger.error("Failed to load resources: " + e.getMessage(), e);
 				throw e;
 			}
 		}
 		return uriManager;
 	}
+
 	/**
-	 * Check whether the access to the specific resource is granted. The The resource is identified
-	 * from the {@link ResourceCallAuthenticationToken} fields {@link ResourceCallAuthenticationToken#getRequestPath()}
-	 * and {@link ResourceCallAuthenticationToken#getHttpMethod()}. 
-	 * @param authentication the authentication token object as instance of {@link ResourceCallAuthenticationToken}.
+	 * Check whether the access to the specific resource is granted. The The
+	 * resource is identified from the {@link ResourceCallAuthenticationToken}
+	 * fields {@link ResourceCallAuthenticationToken#getRequestPath()} and
+	 * {@link ResourceCallAuthenticationToken#getHttpMethod()}.
+	 * 
+	 * @param authentication
+	 *            the authentication token object as instance of
+	 *            {@link ResourceCallAuthenticationToken}.
 	 */
 	@Override
-	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+	public Authentication authenticate(Authentication authentication)
+			throws AuthenticationException {
 
 		assert authentication instanceof ResourceCallAuthenticationToken;
 		ResourceCallAuthenticationToken rcAuth = (ResourceCallAuthenticationToken) authentication;
-		
+
 		String token = (String) rcAuth.getPrincipal();
 		OAuth2Authentication auth = loadAuthentication(token);
-		
-		
+
 		if (auth == null) {
 			throw new InvalidTokenException("Invalid token: " + token);
 		}
 
 		String resourceUri;
 		try {
-			resourceUri = getUriManager().getUriFromRequest(rcAuth.getRequestPath(), rcAuth.getHttpMethod(), auth.getAuthorities());
+			resourceUri = getUriManager().getUriFromRequest(
+					rcAuth.getRequestPath(), rcAuth.getHttpMethod(),
+					auth.getAuthorities());
 		} catch (IOException e) {
 			throw new OAuth2Exception("Problem accessing resource descriptor");
 		}
@@ -116,17 +128,18 @@ public class ResourceAuthenticationManager implements AuthenticationManager {
 					"Invalid token does not contain resource id ("
 							+ resourceUri + ")");
 		}
-		
-		String authority = authServices.loadResourceAuthorityByResourceUri(resourceUri);
+
+		String authority = authServices
+				.loadResourceAuthorityByResourceUri(resourceUri);
 		if (ROLE_USER.equals(authority) && auth.isClientOnly()) {
 			throw new OAuth2AccessDeniedException("Incorrect access method");
-		} 
+		}
 		if (ROLE_CLIENT.equals(authority) && !auth.isClientOnly()) {
 			throw new OAuth2AccessDeniedException("Incorrect access method");
-		} 
-		
+		}
+
 		auth.setDetails(authentication.getDetails());
-		
+
 		return auth;
 	}
 
@@ -135,7 +148,7 @@ public class ResourceAuthenticationManager implements AuthenticationManager {
 		if (accessToken == null) {
 			throw new InvalidTokenException("Invalid access token: " + token);
 		} else if (accessToken.isExpired()) {
-//			tokenStore.removeAccessToken(accessToken);
+			// tokenStore.removeAccessToken(accessToken);
 			throw new InvalidTokenException("Access token expired: " + token);
 		}
 
@@ -167,6 +180,5 @@ public class ResourceAuthenticationManager implements AuthenticationManager {
 	public void setResourceDescriptor(Resource resourceDescriptor) {
 		this.resourceDescriptor = resourceDescriptor;
 	}
-	
-	
+
 }
