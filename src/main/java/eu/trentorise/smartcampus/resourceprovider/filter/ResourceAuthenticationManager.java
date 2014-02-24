@@ -73,7 +73,7 @@ public class ResourceAuthenticationManager implements AuthenticationManager {
 				} else {
 					uriManager = new UriManager(Thread.currentThread()
 							.getContextClassLoader()
-							.getResourceAsStream("/resourceList.xml"));
+							.getResourceAsStream("resourceList.xml"));
 				}
 			} catch (IOException e) {
 				logger.error("Failed to load resources: " + e.getMessage(), e);
