@@ -31,9 +31,9 @@ import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.JdbcClientDetailsService;
 
+import eu.trentorise.smartcampus.User;
 import eu.trentorise.smartcampus.resourceprovider.model.AuthServices;
 import eu.trentorise.smartcampus.resourceprovider.model.ResourceParameter;
-import eu.trentorise.smartcampus.social.model.User;
 
 /**
  * JDBC-based implementation of the {@link AuthServices}
@@ -121,7 +121,8 @@ public class JdbcServices extends JdbcTemplate implements AuthServices {
 		// return queryForList(selectAppByUser,parameters,String.class);
 		return query(selectAppByUser, new RowMapper<ResourceParameter>() {
 			@Override
-			public ResourceParameter mapRow(ResultSet rs, int rownumber) throws SQLException {
+			public ResourceParameter mapRow(ResultSet rs, int rownumber)
+					throws SQLException {
 				ResourceParameter e = new ResourceParameter();
 				e.setValue(rs.getString("value"));
 				e.setClientId(rs.getString("clientId"));
@@ -130,7 +131,7 @@ public class JdbcServices extends JdbcTemplate implements AuthServices {
 
 				return e;
 			}
-		},userId);
+		}, userId);
 	}
 
 }

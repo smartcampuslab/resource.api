@@ -19,13 +19,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 
+import eu.trentorise.smartcampus.User;
 import eu.trentorise.smartcampus.resourceprovider.model.AuthServices;
-import eu.trentorise.smartcampus.social.model.User;
 
 /**
  * Controller prototype with the helper methods for reading user data
+ * 
  * @author raman
- *
+ * 
  */
 @Controller
 public abstract class SCController {
@@ -34,23 +35,25 @@ public abstract class SCController {
 	 * @return reference to {@link AuthServices} instances
 	 */
 	protected abstract AuthServices getAuthServices();
-	
+
 	/**
 	 * Read user with the specified id
+	 * 
 	 * @param userId
 	 * @return
 	 */
 	protected User getUserObject(String userId) {
-		return getAuthServices().loadUserByUserId(userId); 
+		return getAuthServices().loadUserByUserId(userId);
 	}
-	
+
 	/**
 	 * @return UserDetails instance from security context
 	 */
-	protected UserDetails getUser(){
-		return (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	protected UserDetails getUser() {
+		return (UserDetails) SecurityContextHolder.getContext()
+				.getAuthentication().getPrincipal();
 	}
-	
+
 	/**
 	 * @return user id from the security context
 	 */

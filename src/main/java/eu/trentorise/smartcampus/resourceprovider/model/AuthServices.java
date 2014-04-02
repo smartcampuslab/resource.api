@@ -20,13 +20,14 @@ import java.util.List;
 
 import org.springframework.security.oauth2.provider.ClientDetails;
 
-import eu.trentorise.smartcampus.social.model.User;
+import eu.trentorise.smartcampus.User;
 
 /**
- * This interface is used by the resource provider components to
- * get access to resource/client/user information.
+ * This interface is used by the resource provider components to get access to
+ * resource/client/user information.
+ * 
  * @author raman
- *
+ * 
  */
 public interface AuthServices {
 
@@ -35,32 +36,33 @@ public interface AuthServices {
 	 * @return the authority of the specific resource
 	 */
 	String loadResourceAuthorityByResourceUri(String resourceUri);
+
 	/**
 	 * @param clientId
-	 * @return {@link ClientDetails} object corresponding to the specific clientId
+	 * @return {@link ClientDetails} object corresponding to the specific
+	 *         clientId
 	 */
 	ClientDetails loadClientByClientId(String clientId);
+
 	/**
 	 * 
 	 * @param userId
 	 * @return {@link User} object with the specific Id
 	 */
 	User loadUserByUserId(String userId);
+
 	/**
 	 * 
 	 * @param socialId
 	 * @return {@link User} object with the specific social Id
 	 */
 	User loadUserBySocialId(String socialId);
+
 	/**
 	 * 
 	 * @param userId
 	 * @return {@link ResourceParameter} object with the specific Id
 	 */
 	List<ResourceParameter> loadResourceParameterByUserId(String userId);
-	
-
-	
-
 
 }
