@@ -17,7 +17,7 @@
 			<version>2.7.3</version>
 		</dependency>
 
-<!-- 		</dependency> -->
+		<!-- </dependency> -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
@@ -27,7 +27,7 @@
 		</dependency>
 
 
-<!-- 		</dependency> -->
+		<!-- </dependency> -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
@@ -110,6 +110,20 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<inherited>false</inherited>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<version>1.8.0</version>
+				<configuration>
+					<header>${basedir}/license/license.txt</header>
+					<failIfMissing>true</failIfMissing>
+					<aggregate>true</aggregate>
+					<includes>
+						<include>src/**</include>
+					</includes>
 				</configuration>
 			</plugin>
 		</plugins>
