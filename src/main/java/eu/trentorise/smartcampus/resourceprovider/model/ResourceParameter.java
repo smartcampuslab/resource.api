@@ -22,7 +22,7 @@ package eu.trentorise.smartcampus.resourceprovider.model;
  *
  */
 public class ResourceParameter {
-	private String resourceId;
+	private String parameter;
 	/**
 	 * Service
 	 */
@@ -36,16 +36,16 @@ public class ResourceParameter {
 	 */
 	private String clientId;
 	/**
-	 * @return the resourceId
+	 * @return the parameter
 	 */
-	public String getResourceId() {
-		return resourceId;
+	public String getParameter() {
+		return parameter;
 	}
 	/**
-	 * @param resourceId the resourceId to set
+	 * @param parameter the parameter to set
 	 */
-	public void setResourceId(String resourceId) {
-		this.resourceId = resourceId;
+	public void setParameter(String parameter) {
+		this.parameter = parameter;
 	}
 	/**
 	 * @return the serviceId

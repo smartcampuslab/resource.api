@@ -48,7 +48,7 @@ public class JdbcServices extends JdbcTemplate implements AuthServices {
 	private static final String DEFAULT_USER_SOCIALID_SELECT_STATEMENT = "select * from user where social_id = ?";
 	// private static final String
 	// DEFAULT_APP_BY_USER="select value from resource_parameter where clientId in(select clientId from oauth_client_details where developerId=?)";
-	private static final String DEFAULT_RESOURCE_PARAMETER_BY_USER = "select value,clientId,serviceId, resourceId  from resource_parameter r,oauth_client_details c where r.clientId =c.client_Id and c.developerId=?";
+	private static final String DEFAULT_RESOURCE_PARAMETER_BY_USER = "select value,clientId,serviceId, parameter  from resource_parameter r,oauth_client_details c where r.clientId =c.client_Id and c.developerId=?";
 
 	private String selectResourceSql = DEFAULT_RESOURCE_SELECT_STATEMENT;
 	private String selectUserSql = DEFAULT_USER_SELECT_STATEMENT;
@@ -125,7 +125,7 @@ public class JdbcServices extends JdbcTemplate implements AuthServices {
 				ResourceParameter e = new ResourceParameter();
 				e.setValue(rs.getString("value"));
 				e.setClientId(rs.getString("clientId"));
-				e.setResourceId(rs.getString("resourceId"));
+				e.setParameter(rs.getString("parameter"));
 				e.setServiceId(rs.getString("serviceId"));
 
 				return e;
