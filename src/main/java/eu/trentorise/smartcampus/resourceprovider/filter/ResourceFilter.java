@@ -52,7 +52,7 @@ public class ResourceFilter extends OAuth2AuthenticationProcessingFilter {
 
 	private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new OAuth2AuthenticationDetailsSource();
 	private AuthenticationEntryPoint authenticationEntryPoint = new OAuth2AuthenticationEntryPoint();
-	private ResourceAuthenticationManager authenticationManager;
+	private AuthenticationManager authenticationManager;
 
 	public void doFilter(ServletRequest req, ServletResponse res,
 			FilterChain chain) throws IOException, ServletException {
@@ -123,11 +123,8 @@ public class ResourceFilter extends OAuth2AuthenticationProcessingFilter {
 
 	@Override
 	public void setAuthenticationManager(AuthenticationManager authenticationManager) {
-		if (!(authenticationManager instanceof ResourceAuthenticationManager)) {
-			throw new IllegalArgumentException("Only ResourceAuthenticationManager allowed!");
-		}
 		super.setAuthenticationManager(authenticationManager);
-		this.authenticationManager = (ResourceAuthenticationManager)authenticationManager;
+		this.authenticationManager = authenticationManager;
 	}
 
 	
