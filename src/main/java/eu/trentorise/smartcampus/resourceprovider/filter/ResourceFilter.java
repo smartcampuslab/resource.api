@@ -69,6 +69,9 @@ public class ResourceFilter extends OAuth2AuthenticationProcessingFilter {
 					logger.debug("No token in request, will continue chain.");
 				}
 				throw new OAuth2Exception("empty token");
+			} else if (HttpMethod.OPTIONS.equals(HttpMethod.valueOf(request.getMethod()))) {
+				chain.doFilter(request, response);
+//				throw new OAuth2Exception("options");
 			} else {
 				ResourceCallAuthenticationToken authentication = new ResourceCallAuthenticationToken(tokenValue, "");
 				request.setAttribute(OAuth2AuthenticationDetails.ACCESS_TOKEN_VALUE, tokenValue);
