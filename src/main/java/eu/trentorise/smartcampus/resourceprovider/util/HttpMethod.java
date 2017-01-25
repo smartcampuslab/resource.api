@@ -1,6 +1,5 @@
 package eu.trentorise.smartcampus.resourceprovider.util;
 
 public enum HttpMethod {
-	GET,PUT,DELETE,POST;
-	
+	GET,PUT,DELETE,POST,OPTIONS,PATCH;
 }
