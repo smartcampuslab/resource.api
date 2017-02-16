@@ -119,8 +119,8 @@ public class ResourceAuthenticationManager implements AuthenticationManager {
 		String resourceID = resourceUri;// resourceStore.loadResourceByResourceUri(resourceUri);
 										// test senza lettura db
 
-		Collection<String> resourceIds = auth.getAuthorizationRequest()
-				.getScope();
+		Collection<String> resourceIds = auth.getOAuth2Request().getScope();
+//		Collection<String> resourceIds = auth.getAuthorizationRequest().getScope();
 
 		if (resourceID == null || resourceIds.isEmpty()
 				|| !resourceIds.contains(resourceID)) {
